@@ -8,4 +8,5 @@ import java.util.UUID;
 
 public interface BeerTypeRepository extends JpaRepository<BeerType, UUID> {
     Optional<BeerType> findByName(String name);
+
 }

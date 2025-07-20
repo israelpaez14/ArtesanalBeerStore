@@ -3,6 +3,7 @@ package com.artesanalbeer.artesanalbeerstore.dto.beer;
 import lombok.*;
 
 import java.time.LocalDate;
+import java.util.UUID;
 
 @Getter
 @Setter
@@ -12,7 +13,7 @@ import java.time.LocalDate;
 public class BeerRequest {
     private String name;
     private String description;
-    private BeerTypeResponse beerType;
+    private UUID beerTypeId;
     private LocalDate releasedAt;
     private Integer alcoholPercentage;
 }

@@ -38,7 +38,7 @@ public class BeerServiceImp implements BeerService {
 
     @Override
     public PaginatedResponse<BeerResponse> getBeersByBeerType(String beerTypeName, Integer page) {
-        BeerType beerType = this.beerTypeService.findBeerTypeOrFail(beerTypeName);
+        BeerType beerType = this.beerTypeService.getBeerTypeOrFail(beerTypeName);
         Pageable pageable = PageRequest.of(0, PaginationConfiguration.PAGE_SIZE, Sort.by("createdAt").descending());
         Page<Beer> beersPage = beerRepository.findAllByBeerType(beerType, pageable);
         return getBeerResponsePaginatedResponse(page, beersPage);
@@ -68,13 +68,19 @@ public class BeerServiceImp implements BeerService {
     }
 
     @Override
+    public BeerResponse createBeer(BeerRequest beerRequest, MultipartFile picture) {
+        Beer beer = beerMapper.toBeer(beerRequest);
+        this.beerRepository.save(beer);
+
+
+        // Upload cover picture
+        return beerMapper.toBeerResponse(beer);
+    }
+
+    @Override
     public BeerResponse updateBeer(UUID id, BeerRequest beerRequest) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
-    @Override
-    public BeerResponse createBeer(BeerRequest beerRequest, MultipartFile picture) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
 
 }
