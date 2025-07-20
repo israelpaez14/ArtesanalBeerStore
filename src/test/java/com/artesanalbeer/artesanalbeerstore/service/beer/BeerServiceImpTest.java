@@ -1,5 +1,6 @@
 package com.artesanalbeer.artesanalbeerstore.service.beer;
 
+import com.artesanalbeer.artesanalbeerstore.common.BeerStoreTest;
 import com.artesanalbeer.artesanalbeerstore.dto.beer.BeerResponse;
 import com.artesanalbeer.artesanalbeerstore.entities.beer.Beer;
 import com.artesanalbeer.artesanalbeerstore.entities.beer.BeerType;
@@ -12,11 +13,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 
-import java.time.LocalDate;
-
 @SpringBootTest
 @ActiveProfiles("test")
-class BeerServiceImpTest {
+class BeerServiceImpTest extends BeerStoreTest {
     @Autowired
     private BeerService beerService;
 
@@ -25,22 +24,13 @@ class BeerServiceImpTest {
     @Autowired
     private BeerTypeRepository beerTypeRepository;
 
+
     @Test
     @Transactional
     void getBeers() {
-        BeerType beerType = BeerType.builder()
-                .name("Lagger")
-                .description("This is a fresh beer")
-                .build();
+        BeerType beerType = this.getBearType("Lager");
+        Beer beer = this.getBeer(beerType, "Indio");
 
-        Beer beer = Beer.builder()
-                .name("Indio")
-                .description("This is a fresh beer")
-                .beerType(beerType)
-                .alcoholPercentage(40)
-                .pictureUrl("https://www.linkedin.com/in/indio-lagger/")
-                .releasedAt(LocalDate.now())
-                .build();
         beerTypeRepository.save(beerType);
         beerRepository.save(beer);
 
@@ -51,4 +41,27 @@ class BeerServiceImpTest {
         assert beers.getContent().get(0).getBeerType().getName().equals(beerType.getName());
         assert beers.getContent().get(0).getId().equals(beer.getId());
     }
+
+    @Test
+    @Transactional
+    void getBeersByType() {
+        BeerType beerType = this.getBearType("Lager");
+        BeerType beerType2 = this.getBearType("Ale");
+        Beer beer = this.getBeer(beerType, "Indio");
+        Beer beer2 = this.getBeer(beerType, "Corona");
+        Beer beer3 = this.getBeer(beerType2, "Minerva Stout");
+
+        beerTypeRepository.save(beerType);
+        beerTypeRepository.save(beerType2);
+        beerRepository.save(beer);
+        beerRepository.save(beer2);
+        beerRepository.save(beer3);
+        PaginatedResponse<BeerResponse> beers = this.beerService.getBeersByBeerType(beerType.getName(), 1);
+        assert beers.getTotalPages() == 1;
+        assert beers.getTotalItems() == 2;
+        assert beers.getContent().size() == 2;
+        assert beers.getContent().get(0).getBeerType().getName().equals(beerType.getName());
+        assert beers.getContent().get(0).getId().equals(beer.getId());
+    }
+
 }

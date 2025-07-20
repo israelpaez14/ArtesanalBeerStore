@@ -15,4 +15,5 @@ public class PaginatedResponse<T> {
     private int pageSize;
     private int totalPages;
     private int totalItems;
+
 }
