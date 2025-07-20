@@ -4,14 +4,18 @@ import com.artesanalbeer.artesanalbeerstore.common.BeerStoreTest;
 import com.artesanalbeer.artesanalbeerstore.dto.beer.BeerResponse;
 import com.artesanalbeer.artesanalbeerstore.entities.beer.Beer;
 import com.artesanalbeer.artesanalbeerstore.entities.beer.BeerType;
+import com.artesanalbeer.artesanalbeerstore.exception.NotFoundException;
 import com.artesanalbeer.artesanalbeerstore.reposotory.beer.BeerRepository;
 import com.artesanalbeer.artesanalbeerstore.reposotory.beer.BeerTypeRepository;
 import com.artesanalbeer.artesanalbeerstore.utils.PaginatedResponse;
 import jakarta.transaction.Transactional;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
+
+import java.util.UUID;
 
 @SpringBootTest
 @ActiveProfiles("test")
@@ -64,4 +68,34 @@ class BeerServiceImpTest extends BeerStoreTest {
         assert beers.getContent().get(0).getId().equals(beer.getId());
     }
 
+    @Test
+    @Transactional
+    void getBeersByBeerType() {
+        BeerType beerType = this.getBearType("Lager");
+        Beer beer = this.getBeer(beerType, "Indio");
+        beerTypeRepository.save(beerType);
+        beerRepository.save(beer);
+        BeerResponse searchedBeer = this.beerService.getBeerById(beer.getId());
+        assert searchedBeer.getId().equals(beer.getId());
+        assert searchedBeer.getName().equals(beer.getName());
+        assert searchedBeer.getBeerType().getName().equals(beerType.getName());
+        assert searchedBeer.getDescription().equals(beer.getDescription());
+    }
+
+    @Test
+    @Transactional
+    void testDeleteBeer() {
+        BeerType beerType = this.getBearType("Lager");
+        Beer beer = this.getBeer(beerType, "Indio");
+        beerTypeRepository.save(beerType);
+        beerRepository.save(beer);
+        this.beerService.deleteBeer(beer.getId());
+        assert !this.beerRepository.existsById(beer.getId());
+    }
+
+    @Test
+    @Transactional
+    void testDeleteBeerNotFound() {
+        Assertions.assertThrows(NotFoundException.class, () -> this.beerService.deleteBeer(UUID.randomUUID()));
+    }
 }

@@ -4,6 +4,7 @@ import com.artesanalbeer.artesanalbeerstore.dto.beer.BeerRequest;
 import com.artesanalbeer.artesanalbeerstore.dto.beer.BeerResponse;
 import com.artesanalbeer.artesanalbeerstore.entities.beer.Beer;
 import com.artesanalbeer.artesanalbeerstore.entities.beer.BeerType;
+import com.artesanalbeer.artesanalbeerstore.exception.NotFoundException;
 import com.artesanalbeer.artesanalbeerstore.mapper.beer.BeerMapper;
 import com.artesanalbeer.artesanalbeerstore.reposotory.beer.BeerRepository;
 import com.artesanalbeer.artesanalbeerstore.utils.PaginatedResponse;
@@ -56,7 +57,8 @@ public class BeerServiceImp implements BeerService {
 
     @Override
     public BeerResponse getBeerById(UUID id) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        Beer beer = beerRepository.findById(id).orElseThrow(() -> new NotFoundException("Beer Not Found"));
+        return beerMapper.toBeerResponse(beer);
     }
 
     @Override
@@ -66,7 +68,8 @@ public class BeerServiceImp implements BeerService {
 
     @Override
     public void deleteBeer(UUID id) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        Beer beer = beerRepository.findById(id).orElseThrow(() -> new NotFoundException("Beer Not Found"));
+        beerRepository.delete(beer);
     }
 
     @Override
