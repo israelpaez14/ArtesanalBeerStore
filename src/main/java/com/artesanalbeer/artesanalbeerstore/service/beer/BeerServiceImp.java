@@ -62,11 +62,6 @@ public class BeerServiceImp implements BeerService {
     }
 
     @Override
-    public BeerResponse createBeer(BeerRequest beerRequest, MultipartFile picture) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    @Override
     public void deleteBeer(UUID id) {
         Beer beer = beerRepository.findById(id).orElseThrow(() -> new NotFoundException("Beer Not Found"));
         beerRepository.delete(beer);
@@ -77,5 +72,9 @@ public class BeerServiceImp implements BeerService {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
+    @Override
+    public BeerResponse createBeer(BeerRequest beerRequest, MultipartFile picture) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
 
 }
