@@ -2,7 +2,9 @@ package com.artesanalbeer.artesanalbeerstore.service.beer;
 
 import com.artesanalbeer.artesanalbeerstore.entities.beer.BeerType;
 
-public interface BeerTypeService {
-    BeerType findBeerTypeOrFail(String beerTypeName);
+import java.util.UUID;
 
+public interface BeerTypeService {
+    BeerType getBeerTypeOrFail(String beerTypeName);
+    BeerType getBeerTypeByIdOrFail(UUID beerTypeId);
 }
