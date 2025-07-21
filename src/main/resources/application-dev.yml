@@ -18,5 +18,5 @@ spring:
       path: /api/v1
 
 imgbb:
-  api-key: ${IMGBB_APIKEY}
+  api-key: ${IMG_APIKEY}
   url: https://api.imgbb.com/1/upload
