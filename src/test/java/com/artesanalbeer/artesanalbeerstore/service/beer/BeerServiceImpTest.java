@@ -27,8 +27,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 @SpringBootTest
 @ActiveProfiles("test")
 class BeerServiceImpTest extends BeerStoreTest {
-    private final String FIXTURES_FOLDER_PATH = "src/test/java/com/artesanalbeer/artesanalbeerstore/fixtures/";
-
 
     @Autowired
     private BeerService beerService;
@@ -113,6 +111,7 @@ class BeerServiceImpTest extends BeerStoreTest {
     @Test
     @Transactional
     void testCreateBeer() throws IOException {
+        String TESTING_IMAGE_FIXTURE = "/fixtures/images/testing.png";
         BeerType beerType = this.getBearType("Lager");
         beerTypeRepository.save(beerType);
         BeerRequest beerRequest = BeerRequest.builder()
@@ -125,7 +124,7 @@ class BeerServiceImpTest extends BeerStoreTest {
                 .build();
 
 
-        InputStream is = getClass().getResourceAsStream(this.FIXTURES_FOLDER_PATH + "images/test.png");
+        InputStream is = getClass().getResourceAsStream(TESTING_IMAGE_FIXTURE);
         MockMultipartFile mockFile = new MockMultipartFile(
                 "file",
                 "beer-list.csv",
@@ -139,7 +138,6 @@ class BeerServiceImpTest extends BeerStoreTest {
         assertThat(beerResponse.getBeerType().getName()).isEqualTo(beerType.getName());
         assertThat(beerResponse.getBeerType().getDescription()).isEqualTo(beerType.getDescription());
         assertThat(beerResponse.getPictureUrl()).isNotNull();
-
 
     }
 }

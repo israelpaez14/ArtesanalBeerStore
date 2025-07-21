@@ -5,6 +5,7 @@ import com.artesanalbeer.artesanalbeerstore.dto.beer.BeerResponse;
 import com.artesanalbeer.artesanalbeerstore.utils.PaginatedResponse;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.UUID;
 
 public interface BeerService {
@@ -14,7 +15,7 @@ public interface BeerService {
 
     BeerResponse getBeerById(UUID id);
 
-    BeerResponse createBeer(BeerRequest beerRequest, MultipartFile picture);
+    BeerResponse createBeer(BeerRequest beerRequest, MultipartFile picture) throws IOException;
 
     void deleteBeer(UUID id);
 
