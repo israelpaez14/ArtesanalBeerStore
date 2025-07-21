@@ -16,7 +16,7 @@ jobs:
         ports:
           - 5432:5432
         env:
-          POSTGRES_DB: testdb
+          POSTGRES_DB: beer_store_test
           POSTGRES_USER: testuser
           POSTGRES_PASSWORD: testpass
         options: >-
@@ -45,7 +45,7 @@ jobs:
 
       - name: Run tests
         env:
-          SPRING_DATASOURCE_URL: jdbc:postgresql://localhost:5432/testdb
+          SPRING_DATASOURCE_URL: jdbc:postgresql://localhost:5432/beer_store
           SPRING_DATASOURCE_USERNAME: testuser
           SPRING_DATASOURCE_PASSWORD: testpass
           IMG_APIKEY: ${{ secrets.IMG_APIKEY }}
