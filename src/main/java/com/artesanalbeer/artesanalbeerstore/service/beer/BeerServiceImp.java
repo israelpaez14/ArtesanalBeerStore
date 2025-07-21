@@ -76,6 +76,7 @@ public class BeerServiceImp implements BeerService {
     @Transactional
     @Override
     public BeerResponse createBeer(BeerRequest beerRequest, MultipartFile picture) throws IOException {
+        // TODO fill createdBy field when authentication is set
         Beer beer = beerMapper.toBeer(beerRequest);
         if (picture.getOriginalFilename() == null) {
             throw new BadRequestException("The selected picture is not valid");
@@ -90,8 +91,21 @@ public class BeerServiceImp implements BeerService {
     }
 
     @Override
-    public BeerResponse updateBeer(UUID id, BeerRequest beerRequest) {
-        throw new UnsupportedOperationException("Not supported yet.");
+    public BeerResponse updateBeer(UUID id, BeerRequest beerRequest, MultipartFile picture) throws IOException {
+        Beer existingBeer = beerRepository.findById(id).orElseThrow(() -> new NotFoundException("Beer Not Found"));
+        Beer beer = beerMapper.toBeer(beerRequest);
+        beer.setId(existingBeer.getId());
+
+        if (picture.getOriginalFilename() == null) {
+            throw new BadRequestException("The selected picture is not valid");
+        }
+        final String filename = beer.getName() + "_" + UUID.randomUUID() + getFileExtension(
+                picture.getOriginalFilename()
+        );
+        String pictureUrl = this.imageStorageService.uploadImage(picture, filename);
+        beer.setPictureUrl(pictureUrl);
+        beerRepository.save(beer);
+        return beerMapper.toBeerResponse(beer);
     }
 
     private String getFileExtension(@NonNull String filename) {

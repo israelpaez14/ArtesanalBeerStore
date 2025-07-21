@@ -19,5 +19,5 @@ public interface BeerService {
 
     void deleteBeer(UUID id);
 
-    BeerResponse updateBeer(UUID id, BeerRequest beerRequest);
+    BeerResponse updateBeer(UUID id, BeerRequest beerRequest, MultipartFile picture) throws IOException;
 }

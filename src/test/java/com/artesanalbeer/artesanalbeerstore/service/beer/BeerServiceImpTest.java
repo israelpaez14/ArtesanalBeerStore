@@ -20,6 +20,7 @@ import org.springframework.test.context.ActiveProfiles;
 import java.io.IOException;
 import java.io.InputStream;
 import java.time.LocalDate;
+import java.util.Optional;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -133,11 +134,54 @@ class BeerServiceImpTest extends BeerStoreTest {
         );
 
         BeerResponse beerResponse = this.beerService.createBeer(beerRequest, mockFile);
-
         assertThat(beerResponse.getId()).isNotNull();
         assertThat(beerResponse.getBeerType().getName()).isEqualTo(beerType.getName());
         assertThat(beerResponse.getBeerType().getDescription()).isEqualTo(beerType.getDescription());
         assertThat(beerResponse.getPictureUrl()).isNotNull();
-
     }
+
+    @Test
+    @Transactional
+    void testUpdateBeer() throws IOException {
+        String TESTING_IMAGE_FIXTURE = "/fixtures/images/testing.png";
+        BeerType beerType = this.getBearType("Lager");
+        Beer beer = this.getBeer(beerType, "Indio");
+        beerTypeRepository.save(beerType);
+        beerRepository.save(beer);
+
+        BeerRequest beerRequest = BeerRequest.builder()
+                .name("Indio New Name")
+                .description(beer.getDescription())
+                .beerTypeId(beerType.getId())
+                .alcoholPercentage(beer.getAlcoholPercentage())
+                .releasedAt(beer.getReleasedAt())
+                .build();
+
+        InputStream is = getClass().getResourceAsStream(TESTING_IMAGE_FIXTURE);
+        MockMultipartFile mockFile = new MockMultipartFile(
+                "testing.png",
+                "testing.png",
+                "image/png",
+                is
+        );
+
+        BeerResponse response = this.beerService.updateBeer(beer.getId(), beerRequest, mockFile);
+        assertThat(response.getBeerType().getName()).isEqualTo(beerType.getName());
+        Optional<Beer> updatedBeerOptional = beerRepository.findById(beer.getId());
+        assertThat(updatedBeerOptional.isPresent()).isTrue();
+        assertThat(updatedBeerOptional.get().getName()).isEqualTo(beerRequest.getName());
+    }
+
+    @Test
+    @Transactional
+    void testUpdateBeerNotFound() {
+        Assertions.assertThrows(
+                NotFoundException.class,
+                () -> this.beerService.updateBeer(
+                        UUID.randomUUID(),
+                        null,
+                        null
+                ));
+    }
+
 }
