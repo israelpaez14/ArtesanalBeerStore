@@ -31,11 +31,10 @@ public class ExceptionHandling {
         return ResponseEntity.badRequest().body(errors);
     }
 
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    @ExceptionHandler(Exception.class)
+    public void handleServerError() {
 
-//    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-//    @ExceptionHandler(Exception.class)
-//    public void handleServerError() {
-//
-//    }
+    }
 
 }
