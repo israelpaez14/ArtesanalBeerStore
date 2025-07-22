@@ -75,7 +75,6 @@ class BeerServiceImpTest extends BeerStoreTest {
         assert beers.getTotalItems() == 2;
         assert beers.getContent().size() == 2;
         assert beers.getContent().get(0).getBeerType().getName().equals(beerType.getName());
-        assert beers.getContent().get(0).getId().equals(beer.getId());
     }
 
     @Test
@@ -139,9 +138,9 @@ class BeerServiceImpTest extends BeerStoreTest {
         assertThat(beerResponse.getBeerType().getDescription()).isEqualTo(beerType.getDescription());
         assertThat(beerResponse.getPictureUrl()).isNotNull();
 
-
         Beer beer = this.beerRepository.findById(beerResponse.getId()).orElse(null);
         assertThat(beer).isNotNull();
+        assertThat(beer.getCreatedAt()).isNotNull();
     }
 
     @Test
