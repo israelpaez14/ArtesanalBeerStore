@@ -33,8 +33,8 @@ public class ExceptionHandling {
 
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ExceptionHandler(Exception.class)
-    public void handleServerError() {
-
+    public String handleServerError(Exception ex) {
+        return ex.getMessage();
     }
 
 }

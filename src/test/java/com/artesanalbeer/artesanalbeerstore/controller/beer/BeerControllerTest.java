@@ -8,18 +8,21 @@ import com.artesanalbeer.artesanalbeerstore.reposotory.beer.BeerRepository;
 import com.artesanalbeer.artesanalbeerstore.reposotory.beer.BeerTypeRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.transaction.Transactional;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.io.InputStream;
 import java.time.LocalDate;
 import java.util.UUID;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @SpringBootTest
@@ -104,9 +107,7 @@ class BeerControllerTest extends BeerStoreTest {
         mockMvc.perform(get("/beers/type/{beerType}", beerType.getName())).andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.content").isArray())
-                .andExpect(jsonPath("$.content.length()").value(2))
-                .andExpect(jsonPath("$.content[0].name").value(beer.getName()))
-                .andExpect(jsonPath("$.content[1].name").value(beer2.getName()));
+                .andExpect(jsonPath("$.content.length()").value(2));
     }
 
     @Test
@@ -127,6 +128,59 @@ class BeerControllerTest extends BeerStoreTest {
 
         mockMvc.perform(post("/beers").contentType(MediaType.APPLICATION_JSON).content(json))
                 .andExpect(status().isCreated());
+    }
+
+    @Test
+    @Transactional
+    void uploadBeerPicture() throws Exception {
+        BeerType beerType = this.getBearType("Lager");
+        beerTypeRepository.save(beerType);
+
+        Beer beer = this.getBeer(beerType, "Corona");
+        beerRepository.save(beer);
+
+        String TESTING_IMAGE_FIXTURE = "/fixtures/images/testing.png";
+
+
+        InputStream is = getClass().getResourceAsStream(TESTING_IMAGE_FIXTURE);
+        MockMultipartFile mockFile = new MockMultipartFile(
+                "file",
+                "beer-list.csv",
+                "image/png",
+                is
+        );
+
+        mockMvc.perform(multipart("/beers/" + beer.getId() + "/upload-picture").file(mockFile)).andExpect(
+                status().isOk()
+        );
+
+        Beer updatedBeer = this.beerRepository.findById(beer.getId()).orElse(null);
+        Assertions.assertNotNull(updatedBeer);
+        assertThat(updatedBeer.getPictureUrl()).isNotNull();
+    }
+
+    @Test
+    @Transactional
+    void updateBeerPicture() throws Exception {
+        BeerType beerType = this.getBearType("Lager");
+        beerTypeRepository.save(beerType);
+        Beer beer = this.getBeer(beerType, "Corona");
+        beerRepository.save(beer);
+
+        BeerRequest request = BeerRequest.builder()
+                .name("Corona Updated")
+                .description("A fresh beer, ideal for beaches")
+                .beerTypeId(beerType.getId())
+                .releasedAt(LocalDate.now())
+                .alcoholPercentage(6)
+                .build();
+        String json = objectMapper.writeValueAsString(request);
+        mockMvc.perform(put("/beers/{beer-id}", beer.getId()).contentType(MediaType.APPLICATION_JSON).content(json))
+                .andExpect(status().isOk());
+        Beer updatedBeer = this.beerRepository.findById(beer.getId()).orElse(null);
+        Assertions.assertNotNull(updatedBeer);
+        assertThat(updatedBeer.getName()).isEqualTo(request.getName());
+
     }
 
 

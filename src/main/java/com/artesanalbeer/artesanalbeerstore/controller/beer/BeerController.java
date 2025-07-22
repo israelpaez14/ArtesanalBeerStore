@@ -9,7 +9,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.UUID;
 
 @RequiredArgsConstructor
@@ -46,4 +48,17 @@ public class BeerController {
         return ResponseEntity.status(HttpStatus.CREATED).body(this.beerService.createBeer(beerRequest));
     }
 
+    @PostMapping("{beer-id}/upload-picture")
+    @ResponseStatus(HttpStatus.OK)
+    public void uploadBeerPicture(@PathVariable(name = "beer-id") UUID beerId, @RequestPart MultipartFile file) throws IOException {
+        this.beerService.uploadBeerPicture(file, beerId);
+    }
+
+    @PutMapping("{beer-id}")
+    public ResponseEntity<BeerResponse> updateBeer(
+            @Valid @RequestBody BeerRequest beerRequest,
+            @PathVariable(name = "beer-id") UUID beerId
+    ) {
+        return ResponseEntity.ok(this.beerService.updateBeer(beerId, beerRequest));
+    }
 }
