@@ -45,7 +45,11 @@ public class BeerServiceImp implements BeerService {
     @Override
     public PaginatedResponse<BeerResponse> getBeersByBeerType(String beerTypeName, Integer page) {
         BeerType beerType = this.beerTypeService.getBeerTypeOrFail(beerTypeName);
-        Pageable pageable = PageRequest.of(0, PaginationConfiguration.PAGE_SIZE, Sort.by("createdAt").descending());
+        Pageable pageable = PageRequest.of(
+                0,
+                PaginationConfiguration.PAGE_SIZE,
+                Sort.by("createdAt").descending()
+        );
         Page<Beer> beersPage = beerRepository.findAllByBeerType(beerType, pageable);
         return getBeerResponsePaginatedResponse(page, beersPage);
     }
@@ -76,7 +80,6 @@ public class BeerServiceImp implements BeerService {
     @Transactional
     @Override
     public BeerResponse createBeer(BeerRequest beerRequest, MultipartFile picture) throws IOException {
-        // TODO fill createdBy field when authentication is set
         Beer beer = beerMapper.toBeer(beerRequest);
         if (picture.getOriginalFilename() == null) {
             throw new BadRequestException("The selected picture is not valid");

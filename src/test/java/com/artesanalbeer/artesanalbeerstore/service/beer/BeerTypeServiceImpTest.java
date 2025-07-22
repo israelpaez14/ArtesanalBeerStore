@@ -22,6 +22,7 @@ class BeerTypeServiceImpTest extends BeerStoreTest {
     @Autowired
     private BeerTypeRepository beerTypeRepository;
 
+
     @Test
     public void testThatGetTypeOfFailFails() {
         Assertions.assertThrows(NotFoundException.class, () -> this.beerTypeService.getBeerTypeOrFail("BeerName"));
