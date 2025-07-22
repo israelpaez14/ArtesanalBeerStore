@@ -15,9 +15,12 @@ public interface BeerService {
 
     BeerResponse getBeerById(UUID id);
 
-    BeerResponse createBeer(BeerRequest beerRequest, MultipartFile picture) throws IOException;
+    BeerResponse createBeer(BeerRequest beerRequest);
+
+    void uploadBeerPicture(MultipartFile file, UUID beerId) throws IOException;
 
     void deleteBeer(UUID id);
 
-    BeerResponse updateBeer(UUID id, BeerRequest beerRequest, MultipartFile picture) throws IOException;
+    BeerResponse updateBeer(UUID id, BeerRequest beerRequest);
+
 }

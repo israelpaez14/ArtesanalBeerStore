@@ -110,8 +110,8 @@ class BeerServiceImpTest extends BeerStoreTest {
 
     @Test
     @Transactional
-    void testCreateBeer() throws IOException {
-        String TESTING_IMAGE_FIXTURE = "/fixtures/images/testing.png";
+    void testCreateBeer() {
+
         BeerType beerType = this.getBearType("Lager");
         beerTypeRepository.save(beerType);
         BeerRequest beerRequest = BeerRequest.builder()
@@ -123,6 +123,25 @@ class BeerServiceImpTest extends BeerStoreTest {
                 .description("A Corona Bear, Ideal for beaches")
                 .build();
 
+        BeerResponse beerResponse = this.beerService.createBeer(beerRequest);
+        assertThat(beerResponse.getId()).isNotNull();
+        assertThat(beerResponse.getBeerType().getName()).isEqualTo(beerType.getName());
+        assertThat(beerResponse.getBeerType().getDescription()).isEqualTo(beerType.getDescription());
+
+        Beer beer = this.beerRepository.findById(beerResponse.getId()).orElse(null);
+        assertThat(beer).isNotNull();
+        assertThat(beer.getCreatedAt()).isNotNull();
+    }
+
+
+    @Test
+    @Transactional
+    void testUploadBeerPicture() throws IOException {
+        String TESTING_IMAGE_FIXTURE = "/fixtures/images/testing.png";
+        BeerType beerType = this.getBearType("Lager");
+        Beer beer = this.getBeer(beerType, "Indio");
+        beerTypeRepository.save(beerType);
+        beerRepository.save(beer);
 
         InputStream is = getClass().getResourceAsStream(TESTING_IMAGE_FIXTURE);
         MockMultipartFile mockFile = new MockMultipartFile(
@@ -132,21 +151,15 @@ class BeerServiceImpTest extends BeerStoreTest {
                 is
         );
 
-        BeerResponse beerResponse = this.beerService.createBeer(beerRequest, mockFile);
-        assertThat(beerResponse.getId()).isNotNull();
-        assertThat(beerResponse.getBeerType().getName()).isEqualTo(beerType.getName());
-        assertThat(beerResponse.getBeerType().getDescription()).isEqualTo(beerType.getDescription());
-        assertThat(beerResponse.getPictureUrl()).isNotNull();
-
-        Beer beer = this.beerRepository.findById(beerResponse.getId()).orElse(null);
-        assertThat(beer).isNotNull();
-        assertThat(beer.getCreatedAt()).isNotNull();
+        this.beerService.uploadBeerPicture(mockFile, beer.getId());
+        Beer updatedBeer = this.beerRepository.findById(beer.getId()).orElse(null);
+        assertThat(updatedBeer).isNotNull();
+        assertThat(updatedBeer.getPictureUrl()).isNotNull();
     }
 
     @Test
     @Transactional
-    void testUpdateBeer() throws IOException {
-        String TESTING_IMAGE_FIXTURE = "/fixtures/images/testing.png";
+    void testUpdateBeer() {
         BeerType beerType = this.getBearType("Lager");
         Beer beer = this.getBeer(beerType, "Indio");
         beerTypeRepository.save(beerType);
@@ -160,15 +173,7 @@ class BeerServiceImpTest extends BeerStoreTest {
                 .releasedAt(beer.getReleasedAt())
                 .build();
 
-        InputStream is = getClass().getResourceAsStream(TESTING_IMAGE_FIXTURE);
-        MockMultipartFile mockFile = new MockMultipartFile(
-                "testing.png",
-                "testing.png",
-                "image/png",
-                is
-        );
-
-        BeerResponse response = this.beerService.updateBeer(beer.getId(), beerRequest, mockFile);
+        BeerResponse response = this.beerService.updateBeer(beer.getId(), beerRequest);
         assertThat(response.getBeerType().getName()).isEqualTo(beerType.getName());
         Optional<Beer> updatedBeerOptional = beerRepository.findById(beer.getId());
         assertThat(updatedBeerOptional.isPresent()).isTrue();
@@ -182,7 +187,6 @@ class BeerServiceImpTest extends BeerStoreTest {
                 NotFoundException.class,
                 () -> this.beerService.updateBeer(
                         UUID.randomUUID(),
-                        null,
                         null
                 ));
     }

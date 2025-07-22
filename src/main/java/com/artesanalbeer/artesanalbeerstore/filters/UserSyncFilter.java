@@ -30,6 +30,7 @@ public class UserSyncFilter extends OncePerRequestFilter {
     ) throws ServletException, IOException {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication instanceof AnonymousAuthenticationToken) {
+            filterChain.doFilter(request, response);
             return;
         }
 

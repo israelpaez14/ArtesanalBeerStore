@@ -35,7 +35,7 @@ public class SpringSecurityConfig {
                                         "/swagger-ui/**",
                                         "/webjars/**",
                                         "/swagger-ui.html",
-                                        "/beers",
+                                        "/beers/**",
                                         "/beer-types"
                                 ).permitAll()
                                 .anyRequest().authenticated()
