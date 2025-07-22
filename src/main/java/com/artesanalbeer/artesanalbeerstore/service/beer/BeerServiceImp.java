@@ -79,8 +79,15 @@ public class BeerServiceImp implements BeerService {
 
     @Transactional
     @Override
-    public BeerResponse createBeer(BeerRequest beerRequest, MultipartFile picture) throws IOException {
+    public BeerResponse createBeer(BeerRequest beerRequest) {
         Beer beer = beerMapper.toBeer(beerRequest);
+        beerRepository.save(beer);
+        return beerMapper.toBeerResponse(beer);
+    }
+
+    @Override
+    public void uploadBeerPicture(MultipartFile picture, UUID beerId) throws IOException {
+        Beer beer = beerRepository.findById(beerId).orElseThrow(() -> new NotFoundException("Beer Not Found"));
         if (picture.getOriginalFilename() == null) {
             throw new BadRequestException("The selected picture is not valid");
         }
@@ -90,23 +97,14 @@ public class BeerServiceImp implements BeerService {
         String imageUrl = imageStorageService.uploadImage(picture, filename);
         beer.setPictureUrl(imageUrl);
         beerRepository.save(beer);
-        return beerMapper.toBeerResponse(beer);
     }
 
+
     @Override
-    public BeerResponse updateBeer(UUID id, BeerRequest beerRequest, MultipartFile picture) throws IOException {
+    public BeerResponse updateBeer(UUID id, BeerRequest beerRequest) {
         Beer existingBeer = beerRepository.findById(id).orElseThrow(() -> new NotFoundException("Beer Not Found"));
         Beer beer = beerMapper.toBeer(beerRequest);
         beer.setId(existingBeer.getId());
-
-        if (picture.getOriginalFilename() == null) {
-            throw new BadRequestException("The selected picture is not valid");
-        }
-        final String filename = beer.getName() + "_" + UUID.randomUUID() + getFileExtension(
-                picture.getOriginalFilename()
-        );
-        String pictureUrl = this.imageStorageService.uploadImage(picture, filename);
-        beer.setPictureUrl(pictureUrl);
         beerRepository.save(beer);
         return beerMapper.toBeerResponse(beer);
     }
@@ -114,6 +112,5 @@ public class BeerServiceImp implements BeerService {
     private String getFileExtension(@NonNull String filename) {
         return filename.substring(filename.lastIndexOf("."));
     }
-
 
 }
