@@ -17,6 +17,16 @@ spring:
     servlet:
       path: /api/v1
 
+  servlet:
+    multipart:
+      max-file-size: 50MB
+
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: ${AUTH_ISSUER_URL}
+
 imgbb:
   api-key: ${IMG_APIKEY}
   url: https://api.imgbb.com/1/upload

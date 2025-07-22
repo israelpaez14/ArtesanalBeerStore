@@ -76,7 +76,6 @@ public class BeerServiceImp implements BeerService {
     @Transactional
     @Override
     public BeerResponse createBeer(BeerRequest beerRequest, MultipartFile picture) throws IOException {
-        // TODO fill createdBy field when authentication is set
         Beer beer = beerMapper.toBeer(beerRequest);
         if (picture.getOriginalFilename() == null) {
             throw new BadRequestException("The selected picture is not valid");

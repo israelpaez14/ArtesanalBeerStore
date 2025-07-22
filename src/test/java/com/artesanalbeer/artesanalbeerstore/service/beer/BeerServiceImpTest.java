@@ -138,6 +138,10 @@ class BeerServiceImpTest extends BeerStoreTest {
         assertThat(beerResponse.getBeerType().getName()).isEqualTo(beerType.getName());
         assertThat(beerResponse.getBeerType().getDescription()).isEqualTo(beerType.getDescription());
         assertThat(beerResponse.getPictureUrl()).isNotNull();
+
+
+        Beer beer = this.beerRepository.findById(beerResponse.getId()).orElse(null);
+        assertThat(beer).isNotNull();
     }
 
     @Test
