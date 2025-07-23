@@ -12,37 +12,34 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 public class UserSynchronizer {
-    private final UserRepository userRepository;
+  private final UserRepository userRepository;
 
-    public void synchronizeUser(JwtAuthenticationToken jwtAuthenticationToken) {
-        Jwt jwt = jwtAuthenticationToken.getToken();
-        Map<String, Object> claims = jwt.getClaims();
-        User user = this.mapClaimsToUser(claims);
-        userRepository.save(user);
+  public void synchronizeUser(JwtAuthenticationToken jwtAuthenticationToken) {
+    Jwt jwt = jwtAuthenticationToken.getToken();
+    Map<String, Object> claims = jwt.getClaims();
+    User user = this.mapClaimsToUser(claims);
+    userRepository.save(user);
+  }
+
+  public User mapClaimsToUser(Map<String, Object> claims) {
+
+    User user = new User();
+
+    if (claims.containsKey("email")) {
+      user.setEmail((String) claims.get("email"));
     }
 
-
-    public User mapClaimsToUser(Map<String, Object> claims) {
-
-        User user = new User();
-
-        if (claims.containsKey("email")) {
-            user.setEmail((String) claims.get("email"));
-        }
-
-        if (claims.containsKey("sub")) {
-            System.out.println(claims.get("sub"));
-            user.setId(UUID.fromString(claims.get("sub").toString()));
-        }
-        if (claims.containsKey("given_name")) {
-            user.setFirstName(claims.get("given_name").toString());
-        } else if (claims.containsKey("nickname")) {
-            user.setFirstName(claims.get("nickname").toString());
-        }
-        if (claims.containsKey("family_name")) {
-            user.setLastName((String) claims.get("family_name"));
-        }
-        return user;
+    if (claims.containsKey("sub")) {
+      user.setId(UUID.fromString(claims.get("sub").toString()));
     }
-
+    if (claims.containsKey("given_name")) {
+      user.setFirstName(claims.get("given_name").toString());
+    } else if (claims.containsKey("nickname")) {
+      user.setFirstName(claims.get("nickname").toString());
+    }
+    if (claims.containsKey("family_name")) {
+      user.setLastName((String) claims.get("family_name"));
+    }
+    return user;
+  }
 }

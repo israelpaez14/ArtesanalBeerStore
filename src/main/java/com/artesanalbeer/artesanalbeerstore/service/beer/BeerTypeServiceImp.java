@@ -1,5 +1,6 @@
 package com.artesanalbeer.artesanalbeerstore.service.beer;
 
+import com.artesanalbeer.artesanalbeerstore.dto.beer.BeerTypeRequest;
 import com.artesanalbeer.artesanalbeerstore.dto.beer.BeerTypeResponse;
 import com.artesanalbeer.artesanalbeerstore.entities.beer.BeerType;
 import com.artesanalbeer.artesanalbeerstore.exception.NotFoundException;
@@ -53,5 +54,15 @@ public class BeerTypeServiceImp implements BeerTypeService {
     paginatedResponse.setTotalPages(beerTypePage.getTotalPages());
     paginatedResponse.setPageSize(PaginationConfiguration.PAGE_SIZE);
     return paginatedResponse;
+  }
+
+  @Override
+  public BeerTypeResponse createBeerType(BeerTypeRequest beerTypeRequest) {
+    BeerType beerType =
+        BeerType.builder()
+            .name(beerTypeRequest.getName())
+            .description(beerTypeRequest.getDescription())
+            .build();
+    return beerTypeMapper.toBeerTypeResponse(beerTypeRepository.save(beerType));
   }
 }

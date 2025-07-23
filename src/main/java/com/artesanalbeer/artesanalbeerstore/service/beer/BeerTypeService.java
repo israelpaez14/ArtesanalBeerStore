@@ -1,5 +1,6 @@
 package com.artesanalbeer.artesanalbeerstore.service.beer;
 
+import com.artesanalbeer.artesanalbeerstore.dto.beer.BeerTypeRequest;
 import com.artesanalbeer.artesanalbeerstore.dto.beer.BeerTypeResponse;
 import com.artesanalbeer.artesanalbeerstore.entities.beer.BeerType;
 import com.artesanalbeer.artesanalbeerstore.utils.PaginatedResponse;
@@ -11,4 +12,7 @@ public interface BeerTypeService {
   BeerType getBeerTypeByIdOrFail(UUID beerTypeId);
 
   PaginatedResponse<BeerTypeResponse> getBeerTypes(Integer page);
+
+  BeerTypeResponse createBeerType(BeerTypeRequest beerTypeRequest);
+
 }
