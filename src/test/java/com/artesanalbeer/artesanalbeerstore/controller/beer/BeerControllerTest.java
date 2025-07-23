@@ -141,6 +141,35 @@ class BeerControllerTest extends BeerStoreTest {
 
   @Test
   @Transactional
+  void createBeerAsUser() throws Exception {
+    BeerType beerType = this.getBearType("Lager");
+    beerTypeRepository.save(beerType);
+
+    BeerRequest beerRequest =
+        BeerRequest.builder()
+            .name("Corona")
+            .description("A fresh beer, ideal for beaches")
+            .beerTypeId(beerType.getId())
+            .releasedAt(LocalDate.now())
+            .alcoholPercentage(5)
+            .build();
+
+    String json = objectMapper.writeValueAsString(beerRequest);
+
+    mockMvc
+        .perform(
+            post("/beers")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(json)
+                .with(
+                    jwt()
+                        .authorities(new SimpleGrantedAuthority(Roles.USER))
+                        .jwt(jwt -> jwt.claim("sub", UUID.randomUUID().toString()))))
+        .andExpect(status().isUnauthorized());
+  }
+
+  @Test
+  @Transactional
   void uploadBeerPicture() throws Exception {
     BeerType beerType = this.getBearType("Lager");
     beerTypeRepository.save(beerType);
@@ -170,7 +199,32 @@ class BeerControllerTest extends BeerStoreTest {
 
   @Test
   @Transactional
-  void updateBeerPicture() throws Exception {
+  void uploadBeerPictureAsUser() throws Exception {
+    BeerType beerType = this.getBearType("Lager");
+    beerTypeRepository.save(beerType);
+
+    Beer beer = this.getBeer(beerType, "Corona");
+    beerRepository.save(beer);
+
+    String TESTING_IMAGE_FIXTURE = "/fixtures/images/testing.png";
+
+    InputStream is = getClass().getResourceAsStream(TESTING_IMAGE_FIXTURE);
+    MockMultipartFile mockFile = new MockMultipartFile("file", "beer-list.csv", "image/png", is);
+
+    mockMvc
+        .perform(
+            multipart("/beers/" + beer.getId() + "/upload-picture")
+                .file(mockFile)
+                .with(
+                    jwt()
+                        .authorities(new SimpleGrantedAuthority(Roles.USER))
+                        .jwt(jwt -> jwt.claim("sub", UUID.randomUUID().toString()))))
+        .andExpect(status().isUnauthorized());
+  }
+
+  @Test
+  @Transactional
+  void updateBeer() throws Exception {
     BeerType beerType = this.getBearType("Lager");
     beerTypeRepository.save(beerType);
     Beer beer = this.getBeer(beerType, "Corona");
@@ -198,5 +252,34 @@ class BeerControllerTest extends BeerStoreTest {
     Beer updatedBeer = this.beerRepository.findById(beer.getId()).orElse(null);
     Assertions.assertNotNull(updatedBeer);
     assertThat(updatedBeer.getName()).isEqualTo(request.getName());
+  }
+
+  @Test
+  @Transactional
+  void updateBeerAsUser() throws Exception {
+    BeerType beerType = this.getBearType("Lager");
+    beerTypeRepository.save(beerType);
+    Beer beer = this.getBeer(beerType, "Corona");
+    beerRepository.save(beer);
+
+    BeerRequest request =
+        BeerRequest.builder()
+            .name("Corona Updated")
+            .description("A fresh beer, ideal for beaches")
+            .beerTypeId(beerType.getId())
+            .releasedAt(LocalDate.now())
+            .alcoholPercentage(6)
+            .build();
+    String json = objectMapper.writeValueAsString(request);
+    mockMvc
+        .perform(
+            put("/beers/{beer-id}", beer.getId())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(json)
+                .with(
+                    jwt()
+                        .authorities(new SimpleGrantedAuthority(Roles.USER))
+                        .jwt(jwt -> jwt.claim("sub", UUID.randomUUID().toString()))))
+        .andExpect(status().isUnauthorized());
   }
 }
