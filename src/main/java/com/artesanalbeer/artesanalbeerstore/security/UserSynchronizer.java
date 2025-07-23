@@ -2,13 +2,12 @@ package com.artesanalbeer.artesanalbeerstore.security;
 
 import com.artesanalbeer.artesanalbeerstore.entities.User;
 import com.artesanalbeer.artesanalbeerstore.reposotory.user.UserRepository;
+import java.util.Map;
+import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.stereotype.Service;
-
-import java.util.Map;
-import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor

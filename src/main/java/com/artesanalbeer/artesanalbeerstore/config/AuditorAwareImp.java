@@ -2,15 +2,14 @@ package com.artesanalbeer.artesanalbeerstore.config;
 
 import com.artesanalbeer.artesanalbeerstore.entities.User;
 import com.artesanalbeer.artesanalbeerstore.reposotory.user.UserRepository;
+import java.util.Optional;
+import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.AuditorAware;
 import org.springframework.lang.NonNull;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
-
-import java.util.Optional;
-import java.util.UUID;
 
 @Component("auditorProvider")
 @RequiredArgsConstructor

@@ -6,15 +6,14 @@ import com.artesanalbeer.artesanalbeerstore.security.Roles;
 import com.artesanalbeer.artesanalbeerstore.service.beer.BeerService;
 import com.artesanalbeer.artesanalbeerstore.utils.PaginatedResponse;
 import jakarta.validation.Valid;
+import java.io.IOException;
+import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-
-import java.io.IOException;
-import java.util.UUID;
 
 @RequiredArgsConstructor
 @RestController

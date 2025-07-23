@@ -13,21 +13,20 @@ import java.util.UUID;
 @AllArgsConstructor
 @NoArgsConstructor
 public class BeerRequest {
-    @NotNull(message = "The beer name is required")
-    @NotBlank(message = "The beer name is required")
-    private String name;
+  @NotNull(message = "The beer name is required")
+  @NotBlank(message = "The beer name is required")
+  private String name;
 
-    @NotNull(message = "A description is required")
-    @NotBlank(message = "A description is required")
-    private String description;
+  @NotNull(message = "A description is required")
+  @NotBlank(message = "A description is required")
+  private String description;
 
-    @NotNull(message = "A beer type is required")
-    private UUID beerTypeId;
+  @NotNull(message = "A beer type is required")
+  private UUID beerTypeId;
 
-    @NotNull(message = "A released date is required")
-    private LocalDate releasedAt;
+  @NotNull(message = "A released date is required")
+  private LocalDate releasedAt;
 
-    @NotNull(message = "Alcohol percentage is required")
-    private Integer alcoholPercentage;
-
+  @NotNull(message = "Alcohol percentage is required")
+  private Integer alcoholPercentage;
 }

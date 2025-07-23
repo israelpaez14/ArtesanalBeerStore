@@ -1,10 +1,9 @@
 package com.artesanalbeer.artesanalbeerstore.dto.beer;
 
-import lombok.*;
-
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.UUID;
+import lombok.*;
 
 @Getter
 @Setter

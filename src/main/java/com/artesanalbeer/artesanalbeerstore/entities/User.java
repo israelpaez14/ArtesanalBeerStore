@@ -15,9 +15,8 @@ import java.util.UUID;
 @Entity
 @Table(name = "_users")
 public class User {
-    @Id
-    private UUID id;
-    private String email;
-    private String firstName;
-    private String lastName;
+  @Id private UUID id;
+  private String email;
+  private String firstName;
+  private String lastName;
 }

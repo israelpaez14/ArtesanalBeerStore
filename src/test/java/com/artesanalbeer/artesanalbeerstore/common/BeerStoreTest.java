@@ -2,7 +2,6 @@ package com.artesanalbeer.artesanalbeerstore.common;
 
 import com.artesanalbeer.artesanalbeerstore.entities.beer.Beer;
 import com.artesanalbeer.artesanalbeerstore.entities.beer.BeerType;
-
 import java.time.LocalDate;
 
 public class BeerStoreTest {

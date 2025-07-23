@@ -6,13 +6,13 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class BeerTypeMapper {
-    public BeerTypeResponse toBeerTypeResponse(BeerType beerType) {
-        return BeerTypeResponse.builder()
-                .id(beerType.getId())
-                .name(beerType.getName())
-                .description(beerType.getDescription())
-                .createdAt(beerType.getCreatedAt())
-                .updatedAt(beerType.getUpdatedAt())
-                .build();
-    }
+  public BeerTypeResponse toBeerTypeResponse(BeerType beerType) {
+    return BeerTypeResponse.builder()
+        .id(beerType.getId())
+        .name(beerType.getName())
+        .description(beerType.getDescription())
+        .createdAt(beerType.getCreatedAt())
+        .updatedAt(beerType.getUpdatedAt())
+        .build();
+  }
 }

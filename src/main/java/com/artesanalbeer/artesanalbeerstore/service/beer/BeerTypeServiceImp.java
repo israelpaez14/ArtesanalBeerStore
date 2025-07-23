@@ -3,10 +3,9 @@ package com.artesanalbeer.artesanalbeerstore.service.beer;
 import com.artesanalbeer.artesanalbeerstore.entities.beer.BeerType;
 import com.artesanalbeer.artesanalbeerstore.exception.NotFoundException;
 import com.artesanalbeer.artesanalbeerstore.reposotory.beer.BeerTypeRepository;
+import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-
-import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor

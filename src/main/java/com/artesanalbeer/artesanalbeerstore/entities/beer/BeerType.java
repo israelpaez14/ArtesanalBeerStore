@@ -1,11 +1,10 @@
 package com.artesanalbeer.artesanalbeerstore.entities.beer;
 
 import jakarta.persistence.*;
-import lombok.*;
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
-
 import java.time.LocalDateTime;
 import java.util.UUID;
+import lombok.*;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 @Getter
 @Setter

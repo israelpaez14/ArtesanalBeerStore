@@ -1,5 +1,7 @@
 package com.artesanalbeer.artesanalbeerstore.service.beer;
 
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+
 import com.artesanalbeer.artesanalbeerstore.common.BeerStoreTest;
 import com.artesanalbeer.artesanalbeerstore.entities.beer.BeerType;
 import com.artesanalbeer.artesanalbeerstore.exception.NotFoundException;
@@ -10,8 +12,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
-
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 @SpringBootTest
 @ActiveProfiles("test")

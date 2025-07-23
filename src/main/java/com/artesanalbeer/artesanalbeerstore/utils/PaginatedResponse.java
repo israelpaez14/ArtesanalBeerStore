@@ -1,8 +1,7 @@
 package com.artesanalbeer.artesanalbeerstore.utils;
 
-import lombok.*;
-
 import java.util.List;
+import lombok.*;
 
 @Getter
 @Setter
