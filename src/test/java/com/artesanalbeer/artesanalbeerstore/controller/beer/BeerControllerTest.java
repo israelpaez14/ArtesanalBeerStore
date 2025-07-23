@@ -1,13 +1,22 @@
 package com.artesanalbeer.artesanalbeerstore.controller.beer;
 
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.jwt;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+
 import com.artesanalbeer.artesanalbeerstore.common.BeerStoreTest;
 import com.artesanalbeer.artesanalbeerstore.dto.beer.BeerRequest;
 import com.artesanalbeer.artesanalbeerstore.entities.beer.Beer;
 import com.artesanalbeer.artesanalbeerstore.entities.beer.BeerType;
 import com.artesanalbeer.artesanalbeerstore.reposotory.beer.BeerRepository;
 import com.artesanalbeer.artesanalbeerstore.reposotory.beer.BeerTypeRepository;
+import com.artesanalbeer.artesanalbeerstore.security.Roles;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.transaction.Transactional;
+import java.io.InputStream;
+import java.time.LocalDate;
+import java.util.UUID;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,15 +24,8 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.test.web.servlet.MockMvc;
-
-import java.io.InputStream;
-import java.time.LocalDate;
-import java.util.UUID;
-
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -126,8 +128,15 @@ class BeerControllerTest extends BeerStoreTest {
 
         String json = objectMapper.writeValueAsString(beerRequest);
 
-        mockMvc.perform(post("/beers").contentType(MediaType.APPLICATION_JSON).content(json))
-                .andExpect(status().isCreated());
+        mockMvc.perform(
+                post("/beers")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(json).with(
+                                jwt()
+                                        .authorities(new SimpleGrantedAuthority(Roles.ADMIN))
+                                        .jwt(jwt -> jwt.claim("sub", UUID.randomUUID().toString()))
+                        )
+        ).andExpect(status().isCreated());
     }
 
     @Test
@@ -150,7 +159,13 @@ class BeerControllerTest extends BeerStoreTest {
                 is
         );
 
-        mockMvc.perform(multipart("/beers/" + beer.getId() + "/upload-picture").file(mockFile)).andExpect(
+        mockMvc.perform(
+                multipart("/beers/" + beer.getId() + "/upload-picture").file(mockFile).with(
+                        jwt()
+                                .authorities(new SimpleGrantedAuthority(Roles.ADMIN))
+                                .jwt(jwt -> jwt.claim("sub", UUID.randomUUID().toString()))
+                )
+        ).andExpect(
                 status().isOk()
         );
 
@@ -175,12 +190,18 @@ class BeerControllerTest extends BeerStoreTest {
                 .alcoholPercentage(6)
                 .build();
         String json = objectMapper.writeValueAsString(request);
-        mockMvc.perform(put("/beers/{beer-id}", beer.getId()).contentType(MediaType.APPLICATION_JSON).content(json))
+        mockMvc.perform(
+                        put("/beers/{beer-id}", beer.getId()).contentType(MediaType.APPLICATION_JSON).content(json)
+                                .with(
+                                        jwt()
+                                                .authorities(new SimpleGrantedAuthority(Roles.ADMIN))
+                                                .jwt(jwt -> jwt.claim("sub", UUID.randomUUID().toString()))
+                                )
+                )
                 .andExpect(status().isOk());
         Beer updatedBeer = this.beerRepository.findById(beer.getId()).orElse(null);
         Assertions.assertNotNull(updatedBeer);
         assertThat(updatedBeer.getName()).isEqualTo(request.getName());
-
     }
 
 
