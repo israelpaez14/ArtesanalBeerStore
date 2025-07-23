@@ -32,7 +32,8 @@ public class UserSynchronizer {
         }
 
         if (claims.containsKey("sub")) {
-            user.setId((UUID) claims.get("sub"));
+            System.out.println(claims.get("sub"));
+            user.setId(UUID.fromString(claims.get("sub").toString()));
         }
         if (claims.containsKey("given_name")) {
             user.setFirstName(claims.get("given_name").toString());

@@ -2,12 +2,14 @@ package com.artesanalbeer.artesanalbeerstore.controller.beer;
 
 import com.artesanalbeer.artesanalbeerstore.dto.beer.BeerRequest;
 import com.artesanalbeer.artesanalbeerstore.dto.beer.BeerResponse;
+import com.artesanalbeer.artesanalbeerstore.security.Roles;
 import com.artesanalbeer.artesanalbeerstore.service.beer.BeerService;
 import com.artesanalbeer.artesanalbeerstore.utils.PaginatedResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -42,6 +44,7 @@ public class BeerController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
+    @Secured({Roles.STAFF, Roles.ADMIN})
     public ResponseEntity<BeerResponse> addBeer(
             @Valid @RequestBody BeerRequest beerRequest
     ) {
@@ -50,11 +53,13 @@ public class BeerController {
 
     @PostMapping("{beer-id}/upload-picture")
     @ResponseStatus(HttpStatus.OK)
+    @Secured({Roles.STAFF, Roles.ADMIN})
     public void uploadBeerPicture(@PathVariable(name = "beer-id") UUID beerId, @RequestPart MultipartFile file) throws IOException {
         this.beerService.uploadBeerPicture(file, beerId);
     }
 
     @PutMapping("{beer-id}")
+    @Secured({Roles.STAFF, Roles.ADMIN})
     public ResponseEntity<BeerResponse> updateBeer(
             @Valid @RequestBody BeerRequest beerRequest,
             @PathVariable(name = "beer-id") UUID beerId

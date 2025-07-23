@@ -16,7 +16,6 @@ import java.util.UUID;
 @Table(name = "_users")
 public class User {
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
     private String email;
     private String firstName;
