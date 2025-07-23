@@ -65,4 +65,13 @@ public class BeerTypeServiceImp implements BeerTypeService {
             .build();
     return beerTypeMapper.toBeerTypeResponse(beerTypeRepository.save(beerType));
   }
+
+  @Override
+  public BeerTypeResponse updateBeerType(UUID id, BeerTypeRequest beerTypeRequest) {
+    BeerType beerType = this.getBeerTypeByIdOrFail(id);
+    beerType.setName(beerTypeRequest.getName());
+    beerType.setDescription(beerTypeRequest.getDescription());
+    beerTypeRepository.save(beerType);
+    return beerTypeMapper.toBeerTypeResponse(beerType);
+  }
 }

@@ -1,8 +1,7 @@
 package com.artesanalbeer.artesanalbeerstore.controller.beer;
 
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.jwt;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -96,6 +95,54 @@ class BeerTypeControllerTest extends BeerStoreTest {
     mockMvc
         .perform(
             post("/beer-types")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(beerRequestAsString)
+                .with(
+                    jwt()
+                        .authorities(new SimpleGrantedAuthority(Roles.USER))
+                        .jwt(jwt -> jwt.claim("sub", UUID.randomUUID().toString()))))
+        .andExpect(status().isUnauthorized());
+  }
+
+  @Test
+  @Transactional
+  void updateBeerType() throws Exception {
+    BeerType beerType = this.getBearType("Lager");
+    beerTypeRepository.save(beerType);
+
+    BeerTypeRequest beerTypeRequest =
+        BeerTypeRequest.builder().name("Lager").description("Updated lager description").build();
+
+    String beerRequestAsString = objectMapper.writeValueAsString(beerTypeRequest);
+
+    mockMvc
+        .perform(
+            put("/beer-types/{beer-type-id}", beerType.getId())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(beerRequestAsString)
+                .with(
+                    jwt()
+                        .authorities(new SimpleGrantedAuthority(Roles.ADMIN))
+                        .jwt(jwt -> jwt.claim("sub", UUID.randomUUID().toString()))))
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.name").value(beerTypeRequest.getName()))
+        .andExpect(jsonPath("$.description").value(beerTypeRequest.getDescription()));
+  }
+
+  @Test
+  @Transactional
+  void updateBeerTypeAsNormalUser() throws Exception {
+    BeerType beerType = this.getBearType("Lager");
+    beerTypeRepository.save(beerType);
+
+    BeerTypeRequest beerTypeRequest =
+        BeerTypeRequest.builder().name("Lager").description("Updated lager description").build();
+
+    String beerRequestAsString = objectMapper.writeValueAsString(beerTypeRequest);
+
+    mockMvc
+        .perform(
+            put("/beer-types/{beer-type-id}", beerType.getId())
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(beerRequestAsString)
                 .with(

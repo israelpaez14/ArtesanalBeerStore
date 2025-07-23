@@ -6,6 +6,7 @@ import com.artesanalbeer.artesanalbeerstore.security.Roles;
 import com.artesanalbeer.artesanalbeerstore.service.beer.BeerTypeService;
 import com.artesanalbeer.artesanalbeerstore.utils.PaginatedResponse;
 import jakarta.validation.Valid;
+import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -30,5 +31,12 @@ public class BeerTypeController {
       @Valid @RequestBody BeerTypeRequest beerTypeRequest) {
     return ResponseEntity.status(HttpStatus.CREATED)
         .body(beerTypeService.createBeerType(beerTypeRequest));
+  }
+
+  @PutMapping("{beer-type-id}")
+  @Secured({Roles.ADMIN, Roles.STAFF})
+  public ResponseEntity<BeerTypeResponse> updateBeerType(
+      @PathVariable(name = "beer-type-id") UUID beerTypeId, @RequestBody BeerTypeRequest beerTypeRequest) {
+    return ResponseEntity.ok(beerTypeService.updateBeerType(beerTypeId, beerTypeRequest));
   }
 }

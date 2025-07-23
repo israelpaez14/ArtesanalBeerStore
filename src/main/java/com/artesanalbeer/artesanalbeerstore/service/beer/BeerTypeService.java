@@ -15,4 +15,5 @@ public interface BeerTypeService {
 
   BeerTypeResponse createBeerType(BeerTypeRequest beerTypeRequest);
 
+  BeerTypeResponse updateBeerType(UUID id, BeerTypeRequest beerTypeRequest);
 }

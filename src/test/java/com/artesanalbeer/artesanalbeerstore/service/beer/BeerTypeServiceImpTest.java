@@ -3,6 +3,7 @@ package com.artesanalbeer.artesanalbeerstore.service.beer;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 import com.artesanalbeer.artesanalbeerstore.common.BeerStoreTest;
+import com.artesanalbeer.artesanalbeerstore.dto.beer.BeerTypeRequest;
 import com.artesanalbeer.artesanalbeerstore.dto.beer.BeerTypeResponse;
 import com.artesanalbeer.artesanalbeerstore.entities.beer.BeerType;
 import com.artesanalbeer.artesanalbeerstore.exception.NotFoundException;
@@ -57,5 +58,43 @@ class BeerTypeServiceImpTest extends BeerStoreTest {
     PaginatedResponse<BeerTypeResponse> beerTypes = this.beerTypeService.getBeerTypes(1);
     assertThat(beerTypes.getTotalPages()).isEqualTo(2);
     assertThat(beerTypes.getTotalItems()).isEqualTo(20);
+  }
+
+  @Test
+  @Transactional
+  public void testCreateBeerType() {
+    BeerTypeRequest beerTypeRequest =
+        BeerTypeRequest.builder().name("Lager").description("Lager Beer Type").build();
+
+    BeerTypeResponse beerTypeResponse = this.beerTypeService.createBeerType(beerTypeRequest);
+
+    assertThat(beerTypeResponse.getId()).isNotNull();
+    assertThat(beerTypeResponse.getName()).isEqualTo(beerTypeRequest.getName());
+    assertThat(beerTypeResponse.getDescription()).isEqualTo(beerTypeRequest.getDescription());
+
+    BeerType createdBeerType = this.beerTypeService.getBeerTypeByIdOrFail(beerTypeResponse.getId());
+    assertThat(createdBeerType.getId()).isEqualTo(beerTypeResponse.getId());
+    assertThat(createdBeerType.getName()).isEqualTo(beerTypeRequest.getName());
+    assertThat(createdBeerType.getDescription()).isEqualTo(beerTypeRequest.getDescription());
+  }
+
+  @Test
+  @Transactional
+  public void testUpdateBeerType() {
+    BeerType beerType = this.getBearType("Lager");
+    beerTypeRepository.save(beerType);
+    BeerTypeRequest beerTypeRequest =
+        BeerTypeRequest.builder().name("Lager").description("Lager Updated Description").build();
+
+    BeerTypeResponse beerTypeResponse =
+        beerTypeService.updateBeerType(beerType.getId(), beerTypeRequest);
+    assertThat(beerType.getId()).isEqualTo(beerTypeResponse.getId());
+    assertThat(beerTypeResponse.getName()).isEqualTo(beerTypeRequest.getName());
+    assertThat(beerTypeResponse.getDescription()).isEqualTo(beerTypeRequest.getDescription());
+
+    BeerType updatedBeerType = this.beerTypeService.getBeerTypeByIdOrFail(beerTypeResponse.getId());
+    assertThat(updatedBeerType.getId()).isEqualTo(beerTypeResponse.getId());
+    assertThat(updatedBeerType.getName()).isEqualTo(beerTypeRequest.getName());
+    assertThat(updatedBeerType.getDescription()).isEqualTo(beerTypeRequest.getDescription());
   }
 }
