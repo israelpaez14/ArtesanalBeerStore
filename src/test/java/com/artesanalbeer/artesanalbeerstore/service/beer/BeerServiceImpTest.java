@@ -1,5 +1,7 @@
 package com.artesanalbeer.artesanalbeerstore.service.beer;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import com.artesanalbeer.artesanalbeerstore.common.BeerStoreTest;
 import com.artesanalbeer.artesanalbeerstore.dto.beer.BeerRequest;
 import com.artesanalbeer.artesanalbeerstore.dto.beer.BeerResponse;
@@ -10,20 +12,17 @@ import com.artesanalbeer.artesanalbeerstore.reposotory.beer.BeerRepository;
 import com.artesanalbeer.artesanalbeerstore.reposotory.beer.BeerTypeRepository;
 import com.artesanalbeer.artesanalbeerstore.utils.PaginatedResponse;
 import jakarta.transaction.Transactional;
+import java.io.IOException;
+import java.io.InputStream;
+import java.time.LocalDate;
+import java.util.Optional;
+import java.util.UUID;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.ActiveProfiles;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.time.LocalDate;
-import java.util.Optional;
-import java.util.UUID;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
 @ActiveProfiles("test")

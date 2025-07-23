@@ -1,6 +1,7 @@
 # 🍺 Beer Store API
 
-A RESTful API for an online beer store, built with **Spring Boot**. Authentication and authorization are handled via **Keycloak**, and the project is containerized with **Docker** for easy deployment.
+A RESTful API for an online beer store, built with **Spring Boot**. Authentication and authorization are handled via *
+*Keycloak**, and the project is containerized with **Docker** for easy deployment.
 
 ## 🚀 Features
 

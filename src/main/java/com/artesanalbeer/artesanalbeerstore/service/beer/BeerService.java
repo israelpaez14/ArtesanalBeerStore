@@ -3,10 +3,9 @@ package com.artesanalbeer.artesanalbeerstore.service.beer;
 import com.artesanalbeer.artesanalbeerstore.dto.beer.BeerRequest;
 import com.artesanalbeer.artesanalbeerstore.dto.beer.BeerResponse;
 import com.artesanalbeer.artesanalbeerstore.utils.PaginatedResponse;
-import org.springframework.web.multipart.MultipartFile;
-
 import java.io.IOException;
 import java.util.UUID;
+import org.springframework.web.multipart.MultipartFile;
 
 public interface BeerService {
     PaginatedResponse<BeerResponse> getBeers(Integer page);
