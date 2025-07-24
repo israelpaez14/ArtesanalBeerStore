@@ -20,7 +20,9 @@ public class BeerType {
   @GeneratedValue(strategy = GenerationType.UUID)
   private UUID id;
 
+  @Column(unique = true)
   private String name;
+
   private String description;
   @CreatedDate private LocalDateTime createdAt;
 
