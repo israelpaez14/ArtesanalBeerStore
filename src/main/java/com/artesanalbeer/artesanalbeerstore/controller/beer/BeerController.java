@@ -5,6 +5,7 @@ import com.artesanalbeer.artesanalbeerstore.dto.beer.BeerResponse;
 import com.artesanalbeer.artesanalbeerstore.security.Roles;
 import com.artesanalbeer.artesanalbeerstore.service.beer.BeerService;
 import com.artesanalbeer.artesanalbeerstore.utils.PaginatedResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import java.io.IOException;
 import java.util.UUID;
@@ -18,6 +19,7 @@ import org.springframework.web.multipart.MultipartFile;
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/beers")
+@Tag(name = "Beer", description = "Beers related endpoint")
 public class BeerController {
     private final BeerService beerService;
 
