@@ -22,6 +22,8 @@ public class Beer {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
+
+    @Column(unique = true)
     private String name;
     private String description;
     @ManyToOne
